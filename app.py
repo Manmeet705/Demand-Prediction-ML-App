@@ -9,9 +9,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def Home():
-    return render_template("SalesDemandPrediction.html")
+    return render_template("index.html")
 
-@app.route('/predict', methods=["POST"])
+@app.route('/predict', methods=["GET", "POST"])
 def predict():
     prediction = None
     if request.method == 'POST':
@@ -24,8 +24,10 @@ def predict():
         X_new = [np.array(features)]
         # Predict using the loaded model
         prediction = model.predict(X_new)
-    # Render template from separate HTML file in 'templates' folder
-    return render_template('SalesDemandPrediction.html', prediction=int(prediction[0]))
+        # Render template from separate HTML file in 'templates' folder
+        return render_template('SalesDemandPrediction.html', prediction=int(prediction[0]))
+    else:
+        return render_template('SalesDemandPrediction.html', prediction='')
 
 if __name__ == '__main__':
     #app.run(host='0.0.0.0', port=5000, debug=True)
