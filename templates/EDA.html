@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exploratory Data Analysis</title>
+  <style>
+    /* Reset & box-sizing */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #72EDF2 10%, #5151E5 100%);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navigation bar (from index.html & SalesDemandPrediction.html) */
+    nav {
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    nav .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #5151E5;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    nav ul li a:hover {
+      color: #5151E5;
+    }
+
+    /* EDA form container */
+    .eda-container {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+      font-size: 1.75rem;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    label {
+      font-weight: 600;
+      color: #444;
+    }
+
+    select {
+      width: 100%;
+      padding: .6rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    select:focus {
+      border-color: #5151E5;
+      box-shadow: 0 0 4px rgba(81,81,229,.4);
+      outline: none;
+    }
+
+    button {
+      background: #5151E5;
+      color: #fff;
+      border: none;
+      padding: .8rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    button:hover {
+      background: #3e3db8;
+    }
+
+    /* Placeholder for the chart */
+    #chartArea {
+      margin-top: 2rem;
+      min-height: 300px;
+      /* you can style your chart container here */
+    }
+
+    @media (max-width: 600px) {
+      nav ul { flex-direction: column; gap: 1rem; }
+      .eda-container { padding: 1.5rem; margin: 1rem; }
+      h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">DS & ML Dashboard</div>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/eda">Exploratory Data Analysis</a></li>
+      <li><a href="/add-data">Add Data</a></li>
+      <li><a href="/update-data">Update Data</a></li>
+      <li><a href="/train-model">Train Model</a></li>
+      <li><a href="/predict">Predict Demand</a></li>
+    </ul>
+  </nav>
+
+  <div class="eda-container">
+    <h1>Exploratory Data Analysis</h1>
+    <form id="edaForm" action="/eda" method="post">
+      <div>
+        <label for="xColumn">X-Axis Column</label>
+        <select id="xColumn" name="xColumn" required>
+          <option value="" disabled selected>Select X column</option>
+          <option value="Date">Date</option>
+          <option value="Store ID">Store ID</option>
+          <option value="Product ID">Product ID</option>
+          <option value="Category">Category</option>
+          <option value="Region">Region</option>
+          <option value="Inventory Level">Inventory Level</option>
+          <option value="Units Sold">Units Sold</option>
+          <option value="Units Ordered">Units Ordered</option>
+          <option value="Price">Price</option>
+          <option value="Discount">Discount</option>
+          <option value="Weather Condition">Weather Condition</option>
+          <option value="Promotion">Promotion</option>
+          <option value="Competitor Pricing">Competitor Pricing</option>
+          <option value="Seasonality">Seasonality</option>
+          <option value="Epidemic">Epidemic</option>
+          <option value="Demand">Demand</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="yColumn">Y-Axis Column</label>
+        <select id="yColumn" name="yColumn" required>
+          <option value="" disabled selected>Select Y column</option>
+          <option value="Inventory Level">Inventory Level</option>
+          <option value="Units Sold">Units Sold</option>
+          <option value="Units Ordered">Units Ordered</option>
+          <option value="Price">Price</option>
+          <option value="Discount">Discount</option>
+          <option value="Promotion">Promotion</option>
+          <option value="Competitor Pricing">Competitor Pricing</option>
+          <option value="Epidemic">Epidemic</option>
+          <option value="Demand">Demand</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="plotType">Plot Type</label>
+        <select id="plotType" name="plotType" required>
+          <option value="" disabled selected>Select plot type</option>
+          <option value="scatter">Scatter</option>
+          <option value="line">Line</option>
+          <option value="bar">Bar</option>
+          <option value="pie">Pie</option>
+        </select>
+      </div>
+
+      <button type="submit">Generate Plot</button>
+    </form>
+
+    {% if image_file %}
+    <div id="chartArea">
+      <!-- Your chart (e.g., a canvas or SVG) will be rendered here -->
+        <h2>Chart:</h2>
+        <img src="{{ url_for('static', filename=image_file) }}" 
+             alt="My Chart" 
+             style="max-width:100%;height:auto;">
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
