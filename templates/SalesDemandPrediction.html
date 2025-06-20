@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demand Prediction Form</title>
+  <style>
+    /* Reset & box-sizing */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #72EDF2 10%, #5151E5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .form-container {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      max-width: 480px;
+      width: 100%;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+      font-size: 1.5rem;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    label {
+      font-weight: 600;
+      color: #444;
+      margin-bottom: .25rem;
+      display: block;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: .6rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input[type="number"]:focus {
+      border-color: #5151E5;
+      box-shadow: 0 0 4px rgba(81,81,229,.4);
+      outline: none;
+    }
+
+    button {
+      margin-top: .5rem;
+      background: #5151E5;
+      color: #fff;
+      border: none;
+      padding: .8rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    button:hover {
+      background: #3e3db8;
+    }
+
+    @media (max-width: 400px) {
+      .form-container { padding: 1.5rem; }
+      h1 { font-size: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>Demand Prediction</h1>
+    <form id="predictForm" action="/predict" method="post">
+      <label for="inventory">Inventory Level</label>
+      <input type="number" id="inventory" name="inventory_level" min="0" step="1" required>
+
+      <label for="sold">Units Sold</label>
+      <input type="number" id="sold" name="units_sold" min="0" step="1" required>
+
+      <label for="ordered">Units Ordered</label>
+      <input type="number" id="ordered" name="units_ordered" min="0" step="1" required>
+
+      <label for="price">Price</label>
+      <input type="number" id="price" name="price" min="0" step="0.01" required>
+
+      <label for="discount">Discount (%)</label>
+      <input type="number" id="discount" name="discount" min="0" step="1" required>
+
+      <label for="promotion">Promotion (0 or 1)</label>
+      <input type="number" id="promotion" name="promotion" min="0" max="1" step="1" required>
+
+      <label for="competitor">Competitor Pricing</label>
+      <input type="number" id="competitor" name="competitor_pricing" min="0" step="0.01" required>
+
+      <label for="epidemic">Epidemic (0 or 1)</label>
+      <input type="number" id="epidemic" name="epidemic" min="0" max="1" step="1" required>
+
+      <button type="submit">Predict Demand</button>
+	  
+	  <div id="result" style="margin-top:1rem; text-align:center;">
+		<label style="font-weight:600;">Predicted Demand:</label>
+		<span id="predictedDemand" style="font-size:1.2rem; color:#5151E5;">{{prediction}}</span>
+	  </div>
+    </form>
+  </div>
+</body>
+</html>
